@@ -2,27 +2,39 @@ import type { Preset } from "unocss";
 import type { CubePresetOptions } from "./types";
 
 const defaultCubePresetOptions: Required<CubePresetOptions> = {
+  blocksLayerName: "components",
   compositionsLayerName: "components",
   utilitiesLayerName: "components",
   utilityClassesLayerName: "components",
 };
 
-export function presetCube(
-  options: CubePresetOptions = defaultCubePresetOptions
-): Preset {
-  const { compositionsLayerName, utilitiesLayerName } = options;
+export function presetCube(options: CubePresetOptions): Preset {
+  const config: CubePresetOptions = {
+    ...defaultCubePresetOptions,
+    ...options,
+  };
   return {
     name: "unocss-preset-cube",
     rules: [
+      // blocks
+      [
+        "prose",
+        {
+          "--flow-space": "var(--space-m)",
+        },
+        { layer: config.blocksLayerName },
+      ],
       // compositions
       [
         "cluster",
         {
           display: "flex",
           "flex-wrap": "wrap",
-          gap: "var(--cluster-gap, 1rem)",
+          gap: "var(--gutter, var(--space-s-m))",
+          "justify-content": "var(--cluster-horizontal-alignment, flex-start)",
+          "align-items": "var(--cluster-vertical-alignment, center)",
         },
-        { layer: compositionsLayerName },
+        { layer: config.compositionsLayerName },
       ],
       [
         /^flow$/,
@@ -32,7 +44,7 @@ export function presetCube(
             "margin-top": "var(--flow-space, 1em)",
           };
         },
-        { layer: compositionsLayerName },
+        { layer: config.compositionsLayerName },
       ],
       [
         /^grid$/,
@@ -45,7 +57,7 @@ export function presetCube(
           };
           yield {
             [symbols.selector]: (selector) =>
-              `${selector}[data-layout="50-50"]`,
+              `${selector}[data-layout="halves"]`,
             "--grid-placement": "auto-fit",
             "--grid-min-item-size": "clamp(16rem, 50vw, 33rem)",
           };
@@ -56,7 +68,7 @@ export function presetCube(
             "--grid-min-item-size": "clamp(16rem, 33%, 20rem)",
           };
         },
-        { layer: compositionsLayerName },
+        { layer: config.compositionsLayerName },
       ],
       [
         /^repel$/,
@@ -64,16 +76,16 @@ export function presetCube(
           yield {
             display: "flex",
             "flex-wrap": "wrap",
-            gap: " var(--gutter, var(--space-s-m))",
             "justify-content": "space-between",
             "align-items": "var(--repel-vertical-alignment, center)",
+            gap: " var(--gutter, var(--space-s-m))",
           };
           yield {
             [symbols.selector]: (selector) => `${selector}[data-nowrap]`,
             "flex-wrap": "nowrap",
           };
         },
-        { layer: compositionsLayerName },
+        { layer: config.compositionsLayerName },
       ],
       [
         /^sidebar$/,
@@ -85,8 +97,8 @@ export function presetCube(
           };
           yield {
             [symbols.selector]: (selector) => `${selector} > :first-child`,
-            "flex-grow": "1",
             "flex-basis": "var(--sidebar-target-width, 20rem)",
+            "flex-grow": "1",
           };
           yield {
             [symbols.selector]: (selector) => `${selector} > :last-child`,
@@ -95,7 +107,7 @@ export function presetCube(
             "min-width": "var(--sidebar-content-min-width, 50%)",
           };
         },
-        { layer: compositionsLayerName },
+        { layer: config.compositionsLayerName },
       ],
       [
         /^switcher$/,
@@ -117,7 +129,7 @@ export function presetCube(
             "flex-basis": "100%",
           };
         },
-        { layer: compositionsLayerName },
+        { layer: config.compositionsLayerName },
       ],
       [
         "wrapper",
@@ -128,7 +140,7 @@ export function presetCube(
           "padding-right": "var(--gutter)",
           position: "relative",
         },
-        { layer: compositionsLayerName },
+        { layer: config.compositionsLayerName },
       ],
       // utilities
       [
@@ -136,7 +148,7 @@ export function presetCube(
         {
           "padding-block": "var(--region-space, var(--space-xl-2xl))",
         },
-        { layer: utilitiesLayerName },
+        { layer: config.utilitiesLayerName },
       ],
       [
         "visually-hidden",
@@ -151,23 +163,23 @@ export function presetCube(
           width: "1px",
           "white-space": "nowrap",
         },
-        { layer: utilitiesLayerName },
+        { layer: config.utilitiesLayerName },
       ],
       // utility classes
       [
         /^flow-space-(.+)$/,
         ([, d]) => ({ "--flow-space": `var(--space-${d})` }),
-        { layer: "components" },
+        { layer: config.utilityClassesLayerName },
       ],
       [
         /^region-space-(.+)$/,
         ([, d]) => ({ "--region-space": `var(--space-${d})` }),
-        { layer: "components" },
+        { layer: config.utilityClassesLayerName },
       ],
       [
         /^gutter-(.+)$/,
         ([, d]) => ({ "--gutter": `var(--space-${d})` }),
-        { layer: "components" },
+        { layer: config.utilityClassesLayerName },
       ],
     ],
   };
