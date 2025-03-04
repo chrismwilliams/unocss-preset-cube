@@ -15,6 +15,7 @@ export function presetCube(options: CubePresetOptions): Preset {
   };
   return {
     name: "unocss-preset-cube",
+    theme: {},
     rules: [
       // blocks
       [
