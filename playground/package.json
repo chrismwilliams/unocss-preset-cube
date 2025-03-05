@@ -9,6 +9,7 @@
     "preview": "view preview"
   },
   "dependencies": {
+    "@chriswilliams/tokens-to-tailwind": "npm:@jsr/chriswilliams__tokens-to-tailwind@^0.1.1",
     "typescript": "^5.7.3",
     "unocss": "^65.4.3",
     "unocss-preset-cube": "workspace:^"
